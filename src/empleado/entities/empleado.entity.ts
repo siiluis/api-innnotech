@@ -27,7 +27,9 @@ export class Empleado {
   @Column()
   telefono: string;
 
-  @ManyToOne(() => Area, (area) => area.empleados)
+  @ManyToOne(() => Area, (area) => area.empleados, {
+    createForeignKeyConstraints: false,
+  })
   area: Area;
 
   @OneToMany(() => Asignacion, (asignacion) => asignacion.empleado)

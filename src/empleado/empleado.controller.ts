@@ -22,7 +22,6 @@ export class EmpleadoController {
     return await this.empleadoService.create(createEmpleadoDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.empleadoService.findAll();

@@ -32,7 +32,9 @@ export class EmpleadoService {
   }
 
   async findOne(id: number): Promise<ResponseModel> {
-    const result = await this.repository.findOne(id);
+    const result = await this.repository.findOne(id, {
+      relations: ['area'],
+    });
     return {
       data: result,
     } as ResponseModel;
@@ -42,6 +44,8 @@ export class EmpleadoService {
     id: number,
     updateEmpleadoDto: UpdateEmpleadoDto,
   ): Promise<ResponseModel> {
+    console.log(updateEmpleadoDto);
+
     const result = await this.repository.update(id, updateEmpleadoDto);
     return {
       msg: 'UPDATE SUCCESS',

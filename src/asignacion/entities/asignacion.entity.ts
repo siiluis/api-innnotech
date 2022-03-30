@@ -19,14 +19,18 @@ import {
 export class Asignacion {
   @PrimaryGeneratedColumn()
   id: number;
-  @ManyToOne(() => Empleado, (empleado) => empleado.asignaciones)
+  @ManyToOne(() => Empleado, (empleado) => empleado.asignaciones, {
+    createForeignKeyConstraints: false,
+  })
   empleado: Empleado;
 
   @OneToOne(() => Equipo)
   @JoinColumn()
   equipo: Equipo;
 
-  @OneToMany(() => Licencia, (licencia) => licencia.asignacion)
+  @OneToMany(() => Licencia, (licencia) => licencia.asignacion, {
+    createForeignKeyConstraints: false,
+  })
   licencias: Licencia[];
 
   @ManyToMany(() => Periferico)
