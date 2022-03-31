@@ -24,9 +24,9 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
-      port: 3008,
+      port: 3306,
       username: 'root',
-      password: 'test',
+      password: '4DrPzA3TWl02',
       database: 'innotech_db',
       entities: [
         Usuario,
