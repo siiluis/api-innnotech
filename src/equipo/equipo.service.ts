@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { LicenciaService } from 'src/licencia/licencia.service';
 import { ResponseModel } from 'src/utils/response.model';
 import { Repository } from 'typeorm';
 import { CreateEquipoDto } from './dto/create-equipo.dto';
@@ -11,6 +12,7 @@ export class EquipoService {
   constructor(
     @InjectRepository(Equipo)
     private repository: Repository<Equipo>,
+    private licenciaService: LicenciaService,
   ) {}
   async create(createEquipoDto: CreateEquipoDto) {
     const newEquipo = new Equipo();
@@ -19,12 +21,16 @@ export class EquipoService {
     newEquipo.ram = createEquipoDto.ram;
     newEquipo.discoDuro = createEquipoDto.discoDuro;
     newEquipo.procesador = createEquipoDto.procesador;
-
+    newEquipo.licencias = createEquipoDto.licencias;
+    createEquipoDto.licencias.forEach(
+      async (licencia) =>
+        await this.licenciaService.cambiarDisponible(licencia.id, false),
+    );
     return await this.repository.save(newEquipo);
   }
 
   async findAll(): Promise<ResponseModel> {
-    const result = await this.repository.find();
+    const result = await this.repository.find({ relations: ['licencias'] });
     return {
       data: result,
       total: result.length,
@@ -58,10 +64,13 @@ export class EquipoService {
     } as ResponseModel;
   }
 
-  async cambiarDisponible(id: number, disponible: boolean): Promise<boolean> {
+  async cambiarDisponible(
+    id: number | Equipo,
+    valor: string,
+  ): Promise<boolean> {
     try {
       await this.repository.update(id, {
-        disponible: disponible,
+        disponible: valor,
       });
       return true;
     } catch (error) {

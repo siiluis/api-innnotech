@@ -1,3 +1,5 @@
+import { Licencia } from 'src/licencia/entities/licencia.entity';
+
 export class CreateEquipoDto {
   tipoEquipo: string;
 
@@ -8,4 +10,5 @@ export class CreateEquipoDto {
   discoDuro: string;
 
   procesador: string;
+  licencias: Licencia[];
 }

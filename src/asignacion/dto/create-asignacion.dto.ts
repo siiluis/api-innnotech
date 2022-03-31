@@ -6,6 +6,5 @@ import { Periferico } from 'src/periferico/entities/periferico.entity';
 export class CreateAsignacionDto {
   empleado: Empleado;
   equipo: Equipo;
-  licencias: Licencia[];
   perifericos: Periferico[];
 }

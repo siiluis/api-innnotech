@@ -1,4 +1,5 @@
 import { Asignacion } from 'src/asignacion/entities/asignacion.entity';
+import { Equipo } from 'src/equipo/entities/equipo.entity';
 import {
   Column,
   CreateDateColumn,
@@ -22,8 +23,10 @@ export class Licencia {
   @Column()
   productoSerial: string;
 
-  @ManyToOne(() => Asignacion, (asignacion) => asignacion.licencias)
-  asignacion: Asignacion;
+  @ManyToOne(() => Equipo, (equipo) => equipo.licencias, {
+    createForeignKeyConstraints: false,
+  })
+  equipo: Equipo;
 
   @CreateDateColumn({
     type: 'timestamp',

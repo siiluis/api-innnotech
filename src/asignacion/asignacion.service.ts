@@ -16,24 +16,16 @@ export class AsignacionService {
     @InjectRepository(Asignacion)
     private asignacionRepository: Repository<Asignacion>,
     private equipoService: EquipoService,
-    private licenciaService: LicenciaService,
   ) {}
   async create(createAsignacionDto: CreateAsignacionDto): Promise<Asignacion> {
     const newAsignacion = new Asignacion();
     newAsignacion.empleado = createAsignacionDto.empleado;
     newAsignacion.equipo = createAsignacionDto.equipo;
-    newAsignacion.licencias = createAsignacionDto.licencias;
     newAsignacion.perifericos = createAsignacionDto.perifericos;
+    const id: number | Equipo = createAsignacionDto.equipo;
     try {
       const result = await this.asignacionRepository.save(newAsignacion);
-      await this.equipoService.cambiarDisponible(
-        createAsignacionDto.equipo.id,
-        false,
-      );
-      createAsignacionDto.licencias.forEach(
-        async (licencia) =>
-          await this.licenciaService.cambiarDisponible(licencia.id, false),
-      );
+      await this.equipoService.cambiarDisponible(id, '0');
       return result;
     } catch (error) {
       throw new HttpException('NOT CREATE', HttpStatus.NOT_ACCEPTABLE);
@@ -42,7 +34,7 @@ export class AsignacionService {
 
   async findAll(): Promise<ResponseModel> {
     const result = await this.asignacionRepository.find({
-      relations: ['empleado', 'equipo', 'licencias', 'perifericos'],
+      relations: ['empleado', 'equipo', 'perifericos'],
     });
     return {
       data: result,
@@ -62,6 +54,8 @@ export class AsignacionService {
 
     updateAsignacionDto: UpdateAsignacionDto,
   ): Promise<ResponseModel> {
+    console.log(updateAsignacionDto);
+
     const result = await this.asignacionRepository.update(
       id,
       updateAsignacionDto,
@@ -73,7 +67,12 @@ export class AsignacionService {
   }
 
   async remove(id: number) {
+    const asignacion = await this.asignacionRepository.findOne(id, {
+      relations: ['equipo'],
+    });
+    await this.equipoService.cambiarDisponible(asignacion.equipo.id, '1');
     const result = await this.asignacionRepository.delete(id);
+
     return {
       msg: 'DELETE SUCCESS',
       total: result.affected,

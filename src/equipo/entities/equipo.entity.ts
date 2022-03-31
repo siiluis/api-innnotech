@@ -1,7 +1,9 @@
+import { Licencia } from 'src/licencia/entities/licencia.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,8 +13,8 @@ export class Equipo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: true })
-  disponible: boolean;
+  @Column({ default: '1' })
+  disponible: string;
 
   @Column()
   tipoEquipo: string;
@@ -28,6 +30,9 @@ export class Equipo {
 
   @Column()
   procesador: string;
+
+  @OneToMany(() => Licencia, (empleado) => empleado.equipo)
+  licencias: Licencia[];
 
   @CreateDateColumn({
     type: 'timestamp',

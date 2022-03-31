@@ -24,14 +24,9 @@ export class Asignacion {
   })
   empleado: Empleado;
 
-  @OneToOne(() => Equipo)
+  @OneToOne(() => Equipo, { createForeignKeyConstraints: false })
   @JoinColumn()
   equipo: Equipo;
-
-  @OneToMany(() => Licencia, (licencia) => licencia.asignacion, {
-    createForeignKeyConstraints: false,
-  })
-  licencias: Licencia[];
 
   @ManyToMany(() => Periferico)
   @JoinTable()
